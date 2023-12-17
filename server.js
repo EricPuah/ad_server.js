@@ -26,6 +26,10 @@ const adminRef = db.ref('Admin');
 
 const secretKey = crypto.randomBytes(32).toString('hex');
 
+app.get('/', (req, res) => {
+    res.send('Hello World')
+  })
+
 // Login Backend
 app.post('/login', async (req, res) => {
     try {
