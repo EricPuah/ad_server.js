@@ -97,7 +97,7 @@ app.post('/submit-feedback', async (req, res) => {
 
 let driverLocation = null;
 let locationTimeout = null;
-const locationTimeoutDuration = 10000;
+const locationTimeoutDuration = 1000;
 
 const updateDriverLocation = (location) => {
     driverLocation = location;
