@@ -96,12 +96,26 @@ app.post('/submit-feedback', async (req, res) => {
 });
 
 let driverLocation = null;
+let locationTimeout = null;
+const locationTimeoutDuration = 10000;
+
+const updateDriverLocation = (location) => {
+    driverLocation = location;
+
+    // Reset the timeout
+    clearTimeout(locationTimeout);
+    locationTimeout = setTimeout(() => {
+        // Handle the case when the timeout expires (driver location not updated)
+        console.log('Driver location timeout: No location updates received.');
+        driverLocation = null; // Set driverLocation to null or handle as needed
+    }, locationTimeoutDuration);
+};
 
 app.post('/location', async (req, res) => {
     try {
         const { lat, lng } = req.body;
 
-        driverLocation = {lat, lng};
+        updateDriverLocation({ lat, lng });
 
         // Send a response to the client
         res.status(200).json({ success: true, message: 'User location handled successfully on the server' });
