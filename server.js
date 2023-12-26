@@ -109,7 +109,7 @@ app.post('/location', async (req, res) => {
     }
 });
 
-aapp.get('/driver-location', async (req, res) => {
+app.get('/driver-location', async (req, res) => {
     try {
         // Send the current driver's location to the client
         res.status(200).json({ success: true, location: driverLocation });
