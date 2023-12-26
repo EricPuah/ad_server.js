@@ -95,6 +95,8 @@ app.post('/submit-feedback', async (req, res) => {
     }
 });
 
+let driverLocation = null;
+
 app.post('/location', async (req, res) => {
     try {
         const { lat, lng } = req.body;
