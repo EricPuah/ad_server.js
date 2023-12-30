@@ -95,8 +95,24 @@ app.post('/submit-feedback', async (req, res) => {
     }
 });
 
-let driverLocation = null;
-let locationTimeout = null;
+const selectedBuses = [];
+
+app.post('/select-bus', (req, res) => {
+    const selectedBus = req.body.bus;
+  
+    // Check if the bus is already selected
+    if (selectedBuses.includes(selectedBus)) {
+      return res.status(400).json({ error: 'Bus already taken by another driver.' });
+    }
+  
+    // If not taken, add the bus to the selected buses list
+    selectedBuses.push(selectedBus);
+  
+    res.json({ message: 'Bus selected successfully.' });
+  });
+
+let driverLocations = {};
+let locationTimeout = {};
 const locationTimeoutDuration = 5000;
 
 const updateDriverLocation = (location) => {
