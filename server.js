@@ -116,7 +116,7 @@ app.post('/location/:bus', async (req, res) => {
         const bus = req.params.bus;
         const { lat, lng } = req.body;
 
-        updateDriverLocation(bus, { lat, lng });
+        updateDriverLocation(bus, { lat, lng, timestamp: Date.now() });
 
         // Send a response to the client
         res.status(200).json({ success: true, message: 'User location handled successfully on the server' });
