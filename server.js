@@ -28,7 +28,7 @@ const secretKey = crypto.randomBytes(32).toString('hex');
 
 app.get('/', (req, res) => {
     res.send('Hello World')
-  })
+})
 
 // Login Backend
 app.post('/login', async (req, res) => {
@@ -95,22 +95,25 @@ app.post('/submit-feedback', async (req, res) => {
     }
 });
 
-const selectedBuses = [];
+app.get('/location/selected-buses', (req, res) => {
+    res.json({ selectedBuses });
+});
 
-app.post('/select-bus', (req, res) => {
+app.post('/location/select-bus', (req, res) => {
     const selectedBus = req.body.bus;
-  
+
     // Check if the bus is already selected
     if (selectedBuses.includes(selectedBus)) {
-      return res.status(400).json({ error: 'Bus already taken by another driver.' });
+        return res.status(400).json({ error: 'Bus already taken by another driver.' });
     }
-  
+
     // If not taken, add the bus to the selected buses list
     selectedBuses.push(selectedBus);
-  
-    res.json({ message: 'Bus selected successfully.' });
-  });
 
+    res.json({ message: 'Bus selected successfully.' });
+});
+
+const selectedBuses = [];
 let driverLocations = {};
 let locationTimeout = {};
 const locationTimeoutDuration = 5000;
