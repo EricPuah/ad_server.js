@@ -114,24 +114,29 @@ app.post('/select-bus', (req, res) => {
 let driverLocations = {};
 let locationTimeout = {};
 const locationTimeoutDuration = 5000;
+const activeBuses = {};
 
-const updateDriverLocation = (location) => {
-    driverLocation = location;
+const updateDriverLocation = (bus, location) => {
+    driverLocations[bus] = location;
 
     // Reset the timeout
-    clearTimeout(locationTimeout);
-    locationTimeout = setTimeout(() => {
+    clearTimeout(locationTimeout[bus]);
+    locationTimeout[bus] = setTimeout(() => {
         // Handle the case when the timeout expires (driver location not updated)
         console.log('Driver location timeout: No location updates received.');
-        driverLocation = null; // Set driverLocation to null or handle as needed
+        delete driverLocations[bus]; // Set driverLocation to null or handle as needed
     }, locationTimeoutDuration);
 };
 
-app.post('/location', async (req, res) => {
+app.post('/location/:bus', async (req, res) => {
     try {
+        const bus = req.params.bus;
         const { lat, lng } = req.body;
 
-        updateDriverLocation({ lat, lng });
+        updateDriverLocation(bus, { lat, lng });
+
+        // Mark the bus as active
+        activeBuses[bus] = Date.now();
 
         // Send a response to the client
         res.status(200).json({ success: true, message: 'User location handled successfully on the server' });
@@ -141,14 +146,11 @@ app.post('/location', async (req, res) => {
     }
 });
 
-app.get('/driver-location', async (req, res) => {
-    try {
-        // Send the current driver's location to the client
-        res.status(200).json({ success: true, location: driverLocation });
-    } catch (error) {
-        console.error('Error fetching driver location:', error);
-        res.status(500).json({ success: false, message: 'Internal server error' });
-    }
+
+app.get('/active-buses', (req, res) => {
+    const activeBuses = Object.keys(driverLocations);
+    const activeBusesData = activeBuses.map(bus => ({ bus, location: driverLocations[bus] }));
+    res.status(200).json({ success: true, activeBuses: activeBusesData });
 });
 
 app.post('/location/select-bus', (req, res) => {
