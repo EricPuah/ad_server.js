@@ -130,34 +130,11 @@ app.post('/location/:bus', async (req, res) => {
     }
 });
 
-app.get('/driver-location/:bus', async (req, res) => {
-    try {
-        const bus = req.params.bus; // Extract the bus parameter from the URL
-
-        // Check if the requested bus is active
-        if (bus && activeBuses[bus]) {
-            // Send the location of the requested bus to the client
-            res.status(200).json({ success: true, location: driverLocations[bus] });
-        } else {
-            res.status(404).json({ success: false, message: 'Bus not found or location not available' });
-        }
-    } catch (error) {
-        console.error('Error fetching driver location:', error);
-        res.status(500).json({ success: false, message: 'Internal server error' });
-    }
+app.get('/active-buses', (req, res) => {
+    const activeBuses = Object.keys(driverLocations);
+    const activeBusesData = activeBuses.map(bus => ({ bus, location: driverLocations[bus] }));
+    res.status(200).json({ success: true, activeBuses: activeBusesData });
 });
-
-// Cleanup inactive buses every 5 minutes
-setInterval(() => {
-    const currentTimestamp = Date.now();
-    const maxInactiveTime = 10000; // 5 minutes in milliseconds
-
-    Object.keys(activeBuses).forEach((bus) => {
-        if (currentTimestamp - activeBuses[bus] > maxInactiveTime) {
-            delete activeBuses[bus];
-        }
-    });
-}, 10000);
 
 app.listen(port, () => {
     console.log('Server is running on port ' + port);
