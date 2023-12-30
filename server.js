@@ -167,7 +167,7 @@ app.post('/location/check-bus', (req, res) => {
     if (selectedBuses[bus]) {
         return res.status(400).json({ error: 'Bus already selected by another driver' });
     }
-
+P
     res.json({ message: 'Bus is available' });
 });
 
