@@ -153,41 +153,7 @@ app.get('/active-buses', (req, res) => {
     res.status(200).json({ success: true, activeBuses: activeBusesData });
 });
 
-app.post('/location/select-bus', (req, res) => {
-    const { bus } = req.body;
 
-    // Check if the bus is already selected
-    if (selectedBuses[bus]) {
-        return res.status(400).json({ error: 'Bus already selected by another driver' });
-    }
-
-    // Mark the bus as selected
-    selectedBuses[bus] = true;
-
-    // You may want to store the bus selection along with the driver ID for a more robust solution
-
-    res.json({ message: 'Bus selected successfully' });
-});
-
-app.post('/location/deselect-bus', (req, res) => {
-    const { bus } = req.body;
-
-    // Deselect the bus
-    delete selectedBuses[bus];
-
-    res.json({ message: 'Bus deselected successfully' });
-});
-
-app.post('/location/check-bus', (req, res) => {
-    const { bus } = req.body;
-
-    // Check if the bus is already selected
-    if (selectedBuses[bus]) {
-        return res.status(400).json({ error: 'Bus already selected by another driver' });
-    }
-P
-    res.json({ message: 'Bus is available' });
-});
 
 app.listen(port, () => {
     console.log('Server is running on port ' + port);
