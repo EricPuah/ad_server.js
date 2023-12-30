@@ -98,6 +98,7 @@ app.post('/submit-feedback', async (req, res) => {
 let driverLocations = {};
 let locationTimeout = {};
 const locationTimeoutDuration = 5000;
+const activeBuses = {};
 
 const updateDriverLocation = (bus, location) => {
     driverLocations[bus] = location;
@@ -116,7 +117,10 @@ app.post('/location/:bus', async (req, res) => {
         const bus = req.params.bus;
         const { lat, lng } = req.body;
 
-        updateDriverLocation(bus, { lat, lng, timestamp: Date.now() });
+        updateDriverLocation(bus, { lat, lng });
+
+        // Mark the bus as active
+        activeBuses[bus] = Date.now();
 
         // Send a response to the client
         res.status(200).json({ success: true, message: 'User location handled successfully on the server' });
@@ -130,8 +134,8 @@ app.get('/driver-location/:bus', async (req, res) => {
     try {
         const bus = req.params.bus; // Extract the bus parameter from the URL
 
-        // Check if the requested bus has a location
-        if (bus && driverLocations[bus]) {
+        // Check if the requested bus is active
+        if (bus && activeBuses[bus]) {
             // Send the location of the requested bus to the client
             res.status(200).json({ success: true, location: driverLocations[bus] });
         } else {
@@ -142,6 +146,18 @@ app.get('/driver-location/:bus', async (req, res) => {
         res.status(500).json({ success: false, message: 'Internal server error' });
     }
 });
+
+// Cleanup inactive buses every 5 minutes
+setInterval(() => {
+    const currentTimestamp = Date.now();
+    const maxInactiveTime = 10000; // 5 minutes in milliseconds
+
+    Object.keys(activeBuses).forEach((bus) => {
+        if (currentTimestamp - activeBuses[bus] > maxInactiveTime) {
+            delete activeBuses[bus];
+        }
+    });
+}, 10000);
 
 app.listen(port, () => {
     console.log('Server is running on port ' + port);
