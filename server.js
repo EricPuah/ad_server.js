@@ -28,7 +28,7 @@ const secretKey = crypto.randomBytes(32).toString('hex');
 
 app.get('/', (req, res) => {
     res.send('Hello World')
-})
+  })
 
 // Login Backend
 app.post('/login', async (req, res) => {
@@ -146,14 +146,11 @@ app.post('/location/:bus', async (req, res) => {
     }
 });
 
-
 app.get('/active-buses', (req, res) => {
     const activeBuses = Object.keys(driverLocations);
     const activeBusesData = activeBuses.map(bus => ({ bus, location: driverLocations[bus] }));
     res.status(200).json({ success: true, activeBuses: activeBusesData });
 });
-
-
 
 app.listen(port, () => {
     console.log('Server is running on port ' + port);
