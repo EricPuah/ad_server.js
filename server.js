@@ -82,7 +82,7 @@ app.post('/submit-feedback', async (req, res) => {
             category: category,
             message: message,
             rating: rating,
-            timestamp: admin.database.ServerValue.TIMESTAMP, // Optional: Store timestamp
+            timestamp: new Date().toLocaleDateString('en-GB'),
         });
 
         console.log('Received feedback:', formData);
