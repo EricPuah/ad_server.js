@@ -116,7 +116,7 @@ app.post('/location/select-bus', (req, res) => {
 const selectedBuses = [];
 let driverLocations = {};
 let locationTimeout = {};
-const locationTimeoutDuration = 5000;
+const locationTimeoutDuration = 15000;
 const activeBuses = {};
 
 const updateDriverLocation = (bus, location) => {
